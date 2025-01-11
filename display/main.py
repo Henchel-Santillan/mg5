@@ -14,7 +14,9 @@ def main():
         print("App launch failed: no root objects found.")
         sys.exit(-1)
 
-    return app.exec()
+    exit_code = app.exec()
+    del engine
+    sys.exit(exit_code)
 
 if __name__ == "__main__":
     main()

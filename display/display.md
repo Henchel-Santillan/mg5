@@ -12,3 +12,9 @@ To launch the app, execute
 ```
 python3 main.py
 ```
+
+To package and bundle the app and its resources into a single executable, run the `make_di.py` script in the **tools** directory.
+
+```
+python3 tools/make_di.py
+```
