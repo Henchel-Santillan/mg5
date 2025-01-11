@@ -22,27 +22,28 @@ docker run hello-world
 
 
 ## Docker Image
-**Pull** the docker image [here](), which can be done without authentication or a DockerHub account (subject to rate limiting):
+**Pull** the docker image from the public DockerHub repository [here](https://hub.docker.com/repository/docker/sandvichedibledevice/mg5/general), which can be done without authentication or a DockerHub account (subject to rate limiting):
 
 ```
-docker pull sandvichedibledevice/mg5
+docker pull sandvichedibledevice/mg5:<TAG>
+docker run -it -v <ABSOLUTE_PATH_TO_THIS_REPOSITORY>:/workspace/mg5 sandvichedibledevice/mg5:<TAG>
 ```
 
-`sandvichedibledevice` is my DockerHub username. The DockerHub repository is public and can be found [here](https://hub.docker.com/repository/docker/sandvichedibledevice/mg5/general).
+`sandvichedibledevice` is my DockerHub username. `docker run` is used with the `-v` option to mount the local repository into the container instance.
 
 Changes made to the Dockerfile must be captured by building, tagging, and pushing the new changes to the image. **This step will require a DockerHub account.** When setting up your DockerHub account, it is recommended to use a passkey for more convenient authentication. Assuming you are in the `docker` directory:
 
 ```
-docker login
-docker tag <your_docker_username>/mg5:<TAG>
-docker push <your_docker_username>/mg5:<TAG>
+docker login -u <USERNAME>
+docker build -t <USERNAME>/mg5:<TAG> .
+docker push <USERNAME>/mg5:<TAG>
 ```
 
 To test changes made to the Dockerfile (during development):
 
 ```
-docker build -t <your_docker_username>/mg5:<TAG> .
-docker run <your_docker_username>/mg5:<TAG>
+docker build -t <USERNAME>/mg5:<TAG> .
+docker run <USERNAME>/mg5:<TAG>
 ```
 
 N.B. Please always use the image name `mg5` for `<IMAGE>`, and always use an incrementing integer for `<TAG>` (preferably +1 from the previous tag), i.e. the first tag is 1, the second tag would be 2, etc. Note that the first `mg5` is the name of the DockerHub repository.
