@@ -11,7 +11,6 @@ import xml.etree.ElementTree as ET
 from typing import List
 
 DEFAULT_QML_QRC_FNAME = "qml"
-DEFAULT_PYINSTALLER_CMD = ["pyinstaller", "main.py", "--onefile"]
 
 def run_command(cmd: List[str]) -> bool:
     result = subprocess.run(cmd)
@@ -35,9 +34,10 @@ def generate_qrc_file(root_path_str, qml_files: List[str]) -> str:
     return qrc_file_path
 
 def bundle(qrc_str_path: str) -> bool:
-    RCC_COMMAND = ["pyside6-rcc", qrc_str_path, "-o", f"{qrc_str_path.stem}_{qrc_str_path.suffix}.py"]
+    RCC_CMD = ["pyside6-rcc", qrc_str_path, "-o", f"{qrc_str_path.stem}_{qrc_str_path.suffix}.py"]
+    PYINSTALLER_CMD = ["pyinstaller", "main.py", "--onefile"]
 
-    for cmd in [RCC_COMMAND, DEFAULT_PYINSTALLER_CMD]:
+    for cmd in [RCC_CMD, PYINSTALLER_CMD]:
         if not run_command(cmd):
             return False
     return True
@@ -56,7 +56,7 @@ def recurse_and_bundle(root_path_str: str) -> bool:
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--collect", action="store_false", help="Flag specifying whether QML files will be collected")
+    parser.add_argument("--collect", action="store_true", default=False, help="Flag specifying whether QML files will be collected")
     parser.add_argument("-r", "--root", required=False, default=None, help="Root directory to start recursively searching for .qml files")
     parser.add_argument("--qrc", help="Path to .qrc file specifying QML files to bundle")
 

@@ -146,9 +146,5 @@ def main():
         if not cmd_parser.parse(args.message):
             sys.exit(EXIT_FAILURE)
         
-        
-
-        
-
 if __name__ == "__main__":
     main()
