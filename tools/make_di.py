@@ -1,5 +1,4 @@
 # This script builds and packages the display interface into a single executable file
-# https://stackoverflow.com/questions/58035550/pyinstaller-and-qml-files
 
 import argparse
 import pathlib

@@ -7,4 +7,4 @@ RUN apt update && apt install -y build-essential git cmake ninja-build \
 
 ENV PATH="$PATH:~/.local/bin"
 COPY scripts/ scripts/
-RUN chmod -R +x scripts && ./scripts/build_libcamera.sh /tmp && ./scripts/setup.sh
+RUN chmod -R +x scripts && ./scripts/setup.sh
