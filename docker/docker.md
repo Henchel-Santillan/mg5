@@ -48,5 +48,7 @@ docker run <USERNAME>/mg5:<TAG>
 
 N.B. Please always use the image name `mg5` for `<IMAGE>`, and always use an incrementing integer for `<TAG>` (preferably +1 from the previous tag), i.e. the first tag is 1, the second tag would be 2, etc. Note that the first `mg5` is the name of the DockerHub repository.
 
+N.B.++ The container contains simulation and debug tools (such as the PX4 SITL) and is intended for developer use only. The setup script for the companion computer can be found at the root of this repository. If developing on a virtual machine or partition, it is recommended to reserve at least 40 GB of disk space.
+
 <br>
 TODO: Integrate docker image management and distribution into a CI/CD system
