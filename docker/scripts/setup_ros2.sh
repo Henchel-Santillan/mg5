@@ -1,11 +1,13 @@
 #!/bin/bash
 
+TEMP_DIR=$1
+
 # Setup PX4 development environment
 cd
-git clone https://github.com/PX4/PX4-Autopilot.git --recursive
-./PX4-Autopilot/Tools/setup/ubuntu.sh
-cd PX4-Autopilot/ && make px4_sitl
-cd && rm -rf PX4-Autopilot/
+git clone https://github.com/PX4/PX4-Autopilot.git --recursive ${TEMP_DIR}/PX4-Autopilot
+./${TEMP_DIR}/PX4-Autopilot/Tools/setup/ubuntu.sh
+cd ${TEMP_DIR}/PX4-Autopilot/ && make px4_sitl
+cd && rm -rf ${TEMP_DIR}/PX4-Autopilot/
 
 apt install locales
 locale-gen en_US en_US.UTF-8 && update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
@@ -20,9 +22,9 @@ source /opt/ros/humble/setup.bash && echo "source /opt/ros/humble/setup.bash" >>
 # Needed to allow ROS2 to communicate with PX4
 cd
 pip install --user -U empy==3.3.4 pyros-genmsg setuptools
-git clone https://github.com/eProsima/Micro-XRCE-DDS-Agent.git
-cd Micro-XRCE-DDS-Agent
+git clone https://github.com/eProsima/Micro-XRCE-DDS-Agent.git ${TEMP_DIR}/Micro-XRCE-DDS-Agent
+cd ${TEMP_DIR}/Micro-XRCE-DDS-Agent
 mkdir build && cd build
 cmake .. && make && make install
 ldconfig /usr/local/lib/
-cd && rm -rf Micro-XRCE-DDS-Agent
+cd && rm -rf ${TEMP_DIR}/Micro-XRCE-DDS-Agent

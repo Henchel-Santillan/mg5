@@ -2,7 +2,7 @@
 
 # Setup libcamera and ROS2 base (Humble)
 ./setup_libcamera.sh /tmp
-./setup_ros2.sh
+./setup_ros2.sh /tmp
 
 
 # Setup the ROS workspace 
