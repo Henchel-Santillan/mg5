@@ -4,7 +4,7 @@ TMP_DIR=/tmp
 mkdir -p ${TMP_DIR}
 
 #####>>>>> libcamera, rpicam-apps <<<<<#####
-sudo apt install -y ninja-build pkg-config libyaml-dev python3-yaml python3-ply python3-jinja2 libssl-dev openssl \
+sudo apt-get install -y ninja-build pkg-config libyaml-dev python3-yaml python3-ply python3-jinja2 libssl-dev openssl \
     libgnutls28-dev libglib2.0-dev qtbase5-dev libqt5core5a libqt5gui5 libqt5widgets5 \
     libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev pybind11-dev libepoxy-dev libjpeg-dev libtiff5-dev libpng-dev
 
@@ -18,7 +18,7 @@ ninja -C build && sudo ninja -C build install
 cd
 
 # Build rpicam-apps
-sudo apt install -y libboost-program-options-dev libdrm-dev libexif-dev
+sudo apt-get install -y libboost-program-options-dev libdrm-dev libexif-dev
 git clone https://github.com/raspberrypi/rpicam-apps.git ${TMP_DIR}/rpicam-apps
 cd ${TMP_DIR}/rpicam-apps
 meson setup build -Denable_libav=disabled -Denable_drm=enabled -Denable_egl=disabled -Denable_qt=disabled -Denable_opencv=disabled \
@@ -26,9 +26,6 @@ meson setup build -Denable_libav=disabled -Denable_drm=enabled -Denable_egl=disa
 meson compile -C build && sudo meson install -C build
 sudo ldconfig
 
-cd
-rm -rf ${TMP_DIR}
-
 #####>>>>> Install GStreamer <<<<<#####
 list=$(apt-cache --names-only search ^gstreamer1.0-* | awk '{ print $1 }' | sed -e /-doc/d | grep -v gstreamer1.0-hybris)
-sudo apt install $list libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev 
+sudo apt-get install -y $list libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev 
