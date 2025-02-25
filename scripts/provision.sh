@@ -31,7 +31,8 @@ sudo ldconfig
 #####>>>>> Install GStreamer <<<<<#####
 cd
 list=$(apt-cache --names-only search ^gstreamer1.0-* | awk '{ print $1 }' | sed -e /-doc/d | grep -v gstreamer1.0-hybris)
-sudo apt install -y $list libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-tools gstreamer1.0-plugins-good gstreamer1.0-plugins-ugly gstreamer1.0-plugins-bad v4l-utils
+sudo apt install -y $list libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-tools \
+    gstreamer1.0-plugins-good gstreamer1.0-plugins-ugly gstreamer1.0-plugins-bad v4l-utils
 
 #####>>>>> Install ROS2 Humble Base and ROS2 Dev Tools <<<<<#####
 sudo apt update && sudo apt install locales
@@ -59,5 +60,3 @@ cmake ..
 make -j4
 sudo make -j4 install
 sudo ldconfig /usr/local/lib/
-
-
