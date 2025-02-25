@@ -1,0 +1,20 @@
+# This is a systemd service file meant to start and apply mg5-specific applications on boot.
+# Usage:
+# 1. Copy this service file to ~/.config/systemd/user/
+# 2. Copy scripts/mg5_exec.sh into ~, and give it execute permissions.
+# 2. Enable the service (and check if it is enabled afterwards):
+#   systemctl --user daemon-reload
+#   systemctl --user enable mg5.service
+#   systemctl --user is-enabled mg5.service
+# The above steps are to be done during the provisioning step, see the SBC Provisioning Guide.
+# This service will start the following:
+#   1. PX4 uXRCE-DDS Agent (on UART over TELEM2, not UDP)
+#   2. ROS2 image_capture_node
+#   3. Live stream from the USB camera
+
+[Unit]
+Description=Start and apply mg5-specific applications on boot
+
+[Service]
+
+[Install]

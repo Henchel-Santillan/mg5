@@ -3,7 +3,7 @@
 SETUP_DIR=~/setup
 mkdir -p ${SETUP_DIR}
 
-sudo apt install -y build-essential python3 python3-pip git
+sudo apt install -y build-essential gdb python3 python3-pip git
 
 #####>>>>> libcamera, rpicam-apps <<<<<#####
 sudo apt install -y ninja-build pkg-config libyaml-dev python3-yaml python3-ply python3-jinja2 libssl-dev openssl \
@@ -31,7 +31,7 @@ sudo ldconfig
 #####>>>>> Install GStreamer <<<<<#####
 cd
 list=$(apt-cache --names-only search ^gstreamer1.0-* | awk '{ print $1 }' | sed -e /-doc/d | grep -v gstreamer1.0-hybris)
-sudo apt install -y $list libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev 
+sudo apt install -y $list libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-tools gstreamer1.0-plugins-good gstreamer1.0-plugins-ugly gstreamer1.0-plugins-bad v4l-utils
 
 #####>>>>> Install ROS2 Humble Base and ROS2 Dev Tools <<<<<#####
 sudo apt update && sudo apt install locales
