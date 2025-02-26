@@ -20,12 +20,17 @@ int app(int argc, char *argv[]) {
   // NOTE: for Arducam 8MP, this defaults to YUYV @1280x720 (10 FPS)
   std::ostringstream pipeline_stream;
   pipeline_stream << "v4l2src device="
-                  << persistent_device_path
-                  << " ! videoconvert ! x264enc speed-preset=ultrafast "
-                  << "tune=zerolatency bitrate=1000 ! h264parse ! rtph264pay config-interval=1 pt=96 ! udpsink host="
-                  << host
-                  << " port="
-                  << port;
+                  << persistent_device_path;
+
+#ifdef USE_MJPG
+  pipeline_stream << " image/jpeg,framerate=30/1 ! rtpjpegpay !";
+#else
+  pipeline_stream << " ! videoconvert ! x264enc speed-preset=ultrafast "
+                  << "tune=zerolatency bitrate=1000 ! h264parse ! rtph264pay config-interval=1 pt=96 !";
+#endif
+
+  pipeline_stream << " udpsink host=" << host
+                  << " port=" << port;
 
   // Lazily create pipeline
   auto pipeline = gst_parse_launch(pipeline_stream.str().c_str(), NULL);
