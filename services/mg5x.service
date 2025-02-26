@@ -3,8 +3,6 @@ Description=Start ROS2 image capture node and PX4 uXRCE-DDS agent
 After=network-online.target
 
 [Service]
-User=mg5-ubuntu
-Group=mg5-ubuntu
 WorkingDirectory=/home/mg5-ubuntu/ros2ws/src
 ExecStartPre=/bin/bash -c "source /opt/ros/humble/setup.bash"
 ExecStart=/usr/bin/bash /home/mg5-ubuntu/mg5_exec.sh
