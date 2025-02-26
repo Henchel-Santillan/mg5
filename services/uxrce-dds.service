@@ -1,0 +1,11 @@
+[Unit]
+Description=Starts the PX4 uXRCE-DDS Agent
+After=network-online.target # TODO: Change to something related to serial?
+
+[Service]
+Restart=always
+ExecStart=MicroXRCEAgent udp4 -p 8888
+Type=simple
+
+[Install]
+WantedBy=multi-user.target

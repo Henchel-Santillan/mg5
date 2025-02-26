@@ -1,0 +1,12 @@
+[Unit]
+Description=Start mg5 USB camera live feed over UDP
+After=network-online.target
+
+[Service]
+EnvironmentFile=/etc/mg5-stream/var_file
+ExecStart=/home/mg5-ubuntu/mg5-stream-app ${MG5_STREAM_HOST} ${MG5_STREAM_PORT}  # Pull dynamic vars from var_file
+Restart=always                                                          # Retry on failure
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
