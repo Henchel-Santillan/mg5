@@ -15,7 +15,7 @@ int app(int argc, char *argv[]) {
   const auto port = std::stoi(argv[2]);
 
   // Obtain using ls -l /dev/v4l/by-id
-  constexpr auto persistent_device_path = "/dev/v4l/by-id/usb-Arducam_Technology_Co.__Ltd._Arducam_8mp_SN0001-video-index0"
+  constexpr auto persistent_device_path = "/dev/v4l/by-id/usb-Arducam_Technology_Co.__Ltd._Arducam_8mp_SN0001-video-index0";
 
   // NOTE: for Arducam 8MP, this defaults to YUYV @1280x720 (10 FPS)
   std::ostringstream pipeline_stream;
