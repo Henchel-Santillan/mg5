@@ -7,16 +7,16 @@ To start mg5-specific applications on boot, three user services managed by the s
 3. `uxrce-dds.service`: Starts the PX4 uXRCE-DDS Agent
 
 ## Provisioning
-1. Copy the service files to `/etc/systemd/system/`. All of the services are to be configured as system-wide services.
+1. Copy the service files to `/etc/systemd/system/`. All of the services are to be configured as system-wide services. Apply `chmod 664` to each service file (no world writability, no execute permissions).
 2. Copy `exec_mg5.sh` into `~`, and give it execute permissions.
 3. From within `mg5/stream/`, build the `mg5-stream-app` executable, give it execute permissions, and copy it to `~`.
 4. Copy the `var_file` to `/etc/mg5-stream/` (create first if path does not exist). 
 5. Enable both services (and check if each is enabled), replacing `<SERVICE_PATH>` with the path to the service name:
 
 ```
-systemctl --user daemon-reload
-systemctl --user enable <SERVICE_PATH>
-systemctl --user is-enabled <SERVICE_PATH>
+sudo systemctl daemon-reload
+sudo systemctl enable <SERVICE_PATH>
+sudo systemctl is-enabled <SERVICE_PATH>
 ```
 
 ## Notes

@@ -14,9 +14,14 @@ int app(int argc, char *argv[]) {
   const auto host = argv[1];
   const auto port = std::stoi(argv[2]);
 
+  // Obtain using ls -l /dev/v4l/by-id
+  constexpr auto persistent_device_path = "/dev/v4l/by-id/usb-Arducam_Technology_Co.__Ltd._Arducam_8mp_SN0001-video-index0"
+
   // NOTE: for Arducam 8MP, this defaults to YUYV @1280x720 (10 FPS)
   std::ostringstream pipeline_stream;
-  pipeline_stream << "v4l2src device=/dev/video0 ! videoconvert ! x264enc speed-preset=ultrafast "
+  pipeline_stream << "v4l2src device="
+                  << persistent_device_path
+                  << " ! videoconvert ! x264enc speed-preset=ultrafast "
                   << "tune=zerolatency bitrate=1000 ! h264parse ! rtph264pay config-interval=1 pt=96 ! udpsink host="
                   << host
                   << " port="
