@@ -14,6 +14,7 @@ int app(int argc, char *argv[]) {
   const auto host = argv[1];
   const auto port = std::stoi(argv[2]);
 
+  // NOTE: for Arducam 8MP, this defaults to YUYV @1280x720 (10 FPS)
   std::ostringstream pipeline_stream;
   pipeline_stream << "v4l2src device=/dev/video0 ! videoconvert ! x264enc speed-preset=ultrafast "
                   << "tune=zerolatency bitrate=1000 ! h264parse ! rtph264pay config-interval=1 pt=96 ! udpsink host="
@@ -21,12 +22,13 @@ int app(int argc, char *argv[]) {
                   << " port="
                   << port;
 
-  auto pipeline = gst_parse_launch (pipeline_stream.str().c_str(), NULL);
+  // Lazily create pipeline
+  auto pipeline = gst_parse_launch(pipeline_stream.str().c_str(), NULL);
 
   gst_element_set_state(pipeline, GST_STATE_PLAYING);
 
   auto bus = gst_element_get_bus(pipeline);
-  auto msg = gst_bus_timed_pop_filtered (bus, GST_CLOCK_TIME_NONE, 
+  auto msg = gst_bus_timed_pop_filtered(bus, GST_CLOCK_TIME_NONE, 
             static_cast<GstMessageType>(GST_MESSAGE_ERROR | GST_MESSAGE_EOS));
 
   if (GST_MESSAGE_TYPE(msg) == GST_MESSAGE_ERROR) {
@@ -43,7 +45,7 @@ int app(int argc, char *argv[]) {
 
 int main(int argc, char *argv[]) {
   constexpr auto NUM_APP_ARGS = 2;
-  if (argc < 1 + NUM_APP_ARGS) {
+  if (argc != 1 + NUM_APP_ARGS) {
     std::cerr << "Usage: ./mg5-stream-app [host IP] [port]" << std::endl;
     return -1;
   }

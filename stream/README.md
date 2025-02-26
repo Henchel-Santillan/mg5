@@ -9,5 +9,5 @@ A convenience script `launch.sh` in the root of the `stream/` directory builds a
 
 ```
 chmod +x bin/mg5-stream-app
-./bin/mg5-stream-app
+export GST_DEBUG=*:WARN && ./bin/mg5-stream-app [HOST IP] [PORT]
 ```
