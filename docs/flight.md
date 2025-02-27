@@ -31,7 +31,7 @@ Under the **General** tab, ensure
 2. The **Active joystick** is the Xbox controller  
 3. The **RC Mode** is set to 2\. 
 
-![][image1]
+![Joystick Settings, General](resources/flight/joystick_settings.png)
 
 Under **Button Assignments**, one usable button needs to be mapped to the image capture function. Note that **5** and **15** (correspond to the LT and RT spring-loaded trigger buttons) are not usable. The image capture function is **Trigger camera**.
 
@@ -68,7 +68,7 @@ Under the **Advanced** tab, make sure to select “Center stick is zero throttle
 ## Airframe
 
 Under Airframe, find the **Quadrotor x** airframe type and select **Holybro X500 V2** in the dropdown.  
-![][image2]
+![Airframe Settings](resources/flight/airframe.png)
 
 ## Sensors
 
@@ -93,7 +93,7 @@ Set
 * **Full Voltage (per cell)** to 3.90 V
 
 Using a DMM, measure the voltage and current draw across the battery terminals. First click the “Calculate” button, and then record the measurements in the text boxes for both the **Voltage divider** and **Amps per volt** fields.  
-![][image3]
+![Power Settings](resources/flight/power_settings.png)
 
 For real-time power data, connect the battery while performing these configurations. This will allow the voltage divider and amps per volt fields to be filled in properly.
 
@@ -105,7 +105,7 @@ First, click the **PWM Main** tab under **Actuator Outputs,** and then **Identif
 
 Once the Actuator outputs have been identified, ensure the propellers are removed. Under **Actuator Testing**, enable the sliders by flipping the switch. Play around with the throttle sliders and ensure each motor can spin individually, as well as all at once. **Note that the battery needs to be plugged in to perform the actuator tests.**
 
-![][image4]
+![Actuator Settings](resources/flight/actuator_settings.png)
 
 ## PID Tuning
 
