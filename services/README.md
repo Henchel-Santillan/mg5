@@ -11,14 +11,16 @@ To start mg5-specific applications on boot, three user services managed by the s
 2. Copy `exec_mg5.sh` into `~`, and give it execute permissions.
 3. From within `mg5/stream/`, build the `mg5-stream-app` executable, give it execute permissions, and copy it to `~`.
 4. Copy the `var_file` to `/etc/mg5-stream/` (create first if path does not exist). 
-5. Enable both services (and check if each is enabled), replacing `<SERVICE_PATH>` with the path to the service name:
+5. Enable both services (and check if each is enabled), replacing `<SERVICE PATH>` with the path to the service, and `<SERVICE NAME>` with the service name:
 
 ```
 sudo systemctl daemon-reload
-sudo systemctl enable <SERVICE_PATH>
-sudo systemctl is-enabled <SERVICE_PATH>
+sudo systemctl enable <SERVICE PATH>
+sudo systemctl is-enabled <SERVICE NAME>
 ```
 
 ## Notes
+For manual testing, services can be stopped via `sudo systemctl stop <SERVICE NAME>`, and can be disabled via `sudo systemctl disable <SERVICE NAME>`. Instead of rebooting, the recompiled version of a binary (such as `mg5-stream-app`) can be retested by simply restarting the appropriate systemd service using `sudo systemctl restart <SERVICE NAME>`.
+
 ### mg5-stream-app
 The host and port for the `udpsink` element are dynamic, and may change depending on test location, network settings, etc. With this in mind, simply modify the var_file to point to the new host IP and port number, and reboot the SBC for the changes to take effect.

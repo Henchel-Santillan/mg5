@@ -1,5 +1,5 @@
 [Unit]
-Description=Start mg5 USB camera live feed over UDP
+Description=USB camera live feed over UDP
 After=network-online.target
 
 [Service]
