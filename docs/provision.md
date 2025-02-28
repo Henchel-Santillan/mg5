@@ -1,1 +1,0 @@
-# SBC Provisioning Guide
