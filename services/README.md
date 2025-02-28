@@ -11,11 +11,11 @@ To start mg5-specific applications on boot, three user services managed by the s
 2. Copy `exec_mg5.sh` into `~`, and give it execute permissions.
 3. From within `mg5/stream/`, build the `mg5-stream-app` executable, give it execute permissions, and copy it to `~`.
 4. Copy the `var_file` to `/etc/mg5-stream/` (create first if path does not exist). 
-5. Enable both services (and check if each is enabled), replacing `<SERVICE PATH>` with the path to the service, and `<SERVICE NAME>` with the service name:
+5. Enable both services (and check if each is enabled), replacing `<SERVICE NAME>` with the service name:
 
 ```
 sudo systemctl daemon-reload
-sudo systemctl enable <SERVICE PATH>
+sudo systemctl enable <SERVICE NAME>
 sudo systemctl is-enabled <SERVICE NAME>
 ```
 
