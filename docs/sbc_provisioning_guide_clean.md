@@ -251,3 +251,5 @@ Connect a USB drive to any of the USB ports, USB 3.0 preferred (blue ports).
 4. Move or copy files using `mv` or `cp`  
 5. Unmount the device: `sudo umount /media/usb`.  
 6. Unplug the USB device, plug into your PC, and retrieve the files.
+
+Note that this method works well if you have an external monitor and keyboard. Otherwise, if you are using SSH to run these commands, you might as well just do method 1.
