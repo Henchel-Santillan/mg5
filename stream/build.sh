@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# FORMAT is either MJPG or YUYV (raw image format)
+# FORMAT: specify raw image format output (MJPG or YUYV)
 print_usage() {
     echo "Usage: ./build.sh [-f] FORMAT"
 }

@@ -17,7 +17,8 @@ int app(int argc, char *argv[]) {
   // Obtain using ls -l /dev/v4l/by-id
   constexpr auto persistent_device_path = "/dev/v4l/by-id/usb-Arducam_Technology_Co.__Ltd._Arducam_8mp_SN0001-video-index0";
 
-  // NOTE: for Arducam 8MP, this defaults to YUYV @1280x720 (10 FPS)
+  // NOTE: for Arducam 8MP, this defaults to YUYV @1280x720 (10 FPS), although testing shows 15 FPS
+  // can be achieved with good connectivity.
   std::ostringstream pipeline_stream;
   pipeline_stream << "v4l2src device="
                   << persistent_device_path;
