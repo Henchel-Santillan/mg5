@@ -18,7 +18,7 @@ To do so, open cmd on Windows host and `ipconfig /all`. Then, look for `Wireless
 
 Edit the YAML file under `/etc/netplan` to include the following configuration:
 
-\`\`\`  
+```  
 network:  
   version: 2  
   renderer: networkd  
@@ -32,7 +32,7 @@ network:
         addresses:  
           \- 8.8.8.8  
           \- 1.1.1.1  
-\`\`\`
+```
 
 where
 
@@ -44,9 +44,9 @@ The above values should be changed.
 
 Then:
 
-\`\`\`  
+```  
 sudo netplan apply  
-\`\`\`
+```
 
 If necessary, also make sure MAC address is also added to your institution’s network settings page (in order to connect to wlan).
 
@@ -85,9 +85,9 @@ On the Windows Host, connect the Xbox controller. Make sure to press the power b
 Modify `~/PX4-Autopilot/ROMF/px4fmu_common/init.d-posix/px4-rc.mavlink`.  
 On the line that says `mavlink start -x -u $udp_gcs_port_local -r 4000000 -f` under the comment `# GCS link`, add the following option:
 
-\`\`\`  
+```  
 \-t \<WINDOWS HOST IP\>  
-\`\`\`
+```
 
 This allows QGC running on the host to connect to the PX4 Simulator. In  `~/PX4-Autopilot/ROMF/px4fmu_common/init.d-posix/rcS,l`ook for the line that runs the `uxrce-dds-client`.
 
@@ -98,7 +98,7 @@ Change 127.0.0.1 (localhost) to the IP address of the Raspberry Pi. On the VM, s
 
 In the startup messages, you should see something as follows:
 
-\`\`\`  
+```  
 INFO  \[uxrce\_dds\_client\] init UDP agent IP:\<RASPBERRY\_PI\_HOST\>, port:8888  
 INFO  \[mavlink\] mode: Normal, data rate: 4000000 B/s on udp port 18570 remote port 14550  
 INFO  \[mavlink\] mode: Onboard, data rate: 4000000 B/s on udp port 14580 remote port 14540  
@@ -113,7 +113,7 @@ INFO  \[mavlink\] MAVLink only on localhost (set param MAV\_{i}\_BROADCAST \= 1 
 INFO  \[px4\] Startup script returned successfully  
 pxh\> INFO  \[tone\_alarm\] home set  
 INFO  \[commander\] Ready for takeoff\!  
-\`\`\`
+```
 
 The `INFO [commander] Ready for takeoff!` message means that the PX4 simulated vehicle was able to establish a connection to the GCS (QGroundControl running on host). The `INFO  [uxrce_dds_client] init UDP agent IP:<RASPBERRY_PI_HOST>, port:8888` means that the client will try to forward messages over UDP to the target IP over the given port (note that this was localhost before).
 
@@ -123,24 +123,24 @@ QGC should now say “Ready for Flight”. The Joystick option (among others) sh
 
 Use `tmux` and split the window (example below does so horizontally).
 
-\`\`\`  
+```  
 tmux  
 tmux split-window \-h  
-\`\`\`  
+```  
 In one terminal start the agent with settings to connect to the client running on the simulator:
 
-\`\`\`  
+```  
 MicroXRCEAgent udp4 \-p 8888  
-\`\`\`
+```
 
 Start the ROS2 `image_capture_node` from the `mg5x-main` target, built as part of the `mg5x` package.
 
-\`\`\`  
+```  
 cd \~/ros2ws/src  
 colcon build \--packages-select mg5x \--cmake-args \-DTESTING=OFF  
 source install/setup.bash  
 ros2 run mg5x mg5x-main  
-\`\`\`
+```
 
 On the Raspberry Pi, you should start to see messages about topics, publishers, and datawriters being created. See image below for reference:
 

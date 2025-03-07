@@ -123,8 +123,7 @@ Good safety and flight behaviour can prevent the drone from disarming itself.
 
 This section can be skipped (for now).
 
-## Parameters {#parameters}
-
+## Parameters
 For any modifications to parameters that prompt you to “Reboot the Vehicle”, rebooting right after the vehicles recommended. Do this by clicking the “Tools” button on the top right, and then “Reboot Vehicle”.
 
 ### Parameters \- Joystick
@@ -133,6 +132,35 @@ For any modifications to parameters that prompt you to “Reboot the Vehicle”,
 * **MAV\_0\_RATE** should be set to maximum baud rate for serial 8N1, or 5760 B/s
 
 Note that setting COM\_RC\_IN\_MODE to Joystick only will disable the Radio section. This is because joysticks are not the same as RC transmitters, and so there is no need for Radio calibration (you do Joystick calibration instead).
+
+## Connecting the FMU to the SBC
+Ensure the Pixhawk is connected to the Raspberry Pi via TELEM2.
+
+Connect the Pixhawk 6C to your PC via USB. Go to Vehicle Setup > Parameters.
+
+First, set `MAV_1_CONFIG` is set to `0` (corresponds to TELEM2). See here. This will disable MAVLink on TELEM2, which is necessary to enable the uXRCE-DDS client on TELEM2 instead. You may need to reboot after applying this setting change. 
+
+Then,
+1. Change the `UXRCE_DDS_CFG` parameter to `102` (this corresponds to TELEM2). 
+2. Leave the `SER_TEL2_BAUD` parameter as default (`921600`). This is the same baud rate that will be used when the SBC starts the uXRCE-DDS agent.
+
+You may then check that the uXRCE-DDS client module is now running through the MAVLink Console in QGroundControl.
+
+```
+uxrce_dds_client status
+```
+
+If the client module is not running, it can be manually enabled:
+
+```
+uxrce_dds_client start -t serial -d /dev/ttyS3 -b 921600
+```
+
+Verify that 
+* `MAV_1_RATE` is set to `5760` B/s (theoretical maximum)
+* `MAV_1_MODE/MAV_2_MODE` is set to `2` (corresponds to onboard). See here.
+
+If you have not already, follow the steps in the `Setting Up Serial Connection for Pixhawk` section in the SBC Provisioning Guide.
 
 ## Flight
 
@@ -143,7 +171,6 @@ Note that setting COM\_RC\_IN\_MODE to Joystick only will disable the Radio sect
 Note that the drone will automatically disarm if low (near-zero) throttle is detected. On the field, this will not be an issue since sufficient throttle will be needed to get the drone off the ground.
 
 # Development Notes
-
 Presented below are somewhat coherent notes taken during the bring-up process, left here to potentially aid future debugging.
 
 Power Setup
