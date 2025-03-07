@@ -50,3 +50,5 @@ dtoverlay=dwc2,dr_mode=host
 
 [all]
 dtoverlay=vc4-kms-v3d
+enable_uart=1
+dtoverlay=disable-bt

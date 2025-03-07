@@ -100,7 +100,7 @@ sudo reboot
 ```
 
 
-## Configuring `/boot/firwmare/config.txt`
+## Configuring `/boot/firwmare/config.txt` for the CSI Camera
 
 Use the `raspi-config` utility to ensure support for the Legacy Camera Hardware is **disabled**. You can do this by first running `raspi-config` in the terminal, navigating to `Interface Options`, hitting **Enter** on the **Legacy Hardware** option, and selecting “No”.
 
@@ -161,6 +161,39 @@ colcon build --packages-select px4_msgs
 
 ```
 colcon build --packages-select mg5x --cmake-args -DTESTING=OFF
+```
+
+## Setting Up Serial Connection for Pixhawk
+
+1. Open the raspi-config tool. 
+
+```
+sudo raspi-config
+```
+
+Navigate to Interface Options, and then click Serial Port. 
+Select No to disable serial login shell.
+Select Yes to enable the serial interface
+
+Click Finish to apply the changes, and then reboot the SBC.
+
+2. Open /boot/firmware/config.txt and append the following text to the end of the file (after the last line):
+
+```
+enable_uart=1
+dtoverlay=disable-bt
+```
+
+Note that the `enable_uart=1` line might already exist. The `dtoverlay=disable-dt` lines disables the Bluetooth device, and makes UART0 the primary UART. Verify that the serial port is indeed available:
+
+```
+ls -l /dev/serial0
+```
+
+On the SBC, this points to either `/dev/ttyS0` or `/dev/ttyAMA0`. The agent is started as follows in the system-wide uxrce-dds.service file; the uxrce-dds service should have been enabled as part of the SBC provisioning process.
+
+```
+MicroXRCEAgent serial --dev /dev/serial0 -b 921600
 ```
 
 

@@ -1,11 +1,13 @@
 # TODO: Change After= to something related to serial?
 [Unit]
 Description=PX4 uXRCE-DDS Agent
-After=network-online.target
+#After=network-online.target
+After=dev-serial0.device
 
 [Service]
 Restart=always
-ExecStart=MicroXRCEAgent udp4 -p 8888
+# ExecStart=MicroXRCEAgent udp4 -p 8888
+ExecStart=MicroXRCEAgent serial --dev /dev/serial0 -b 921600
 Type=simple
 
 [Install]
