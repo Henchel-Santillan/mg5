@@ -76,7 +76,7 @@ Alternatively, you can supply the IP address:
 
 If using Windows, it is strongly recommended to create a `config` file in the `.ssh` directory in your user root for SSH to define a keep-alive interval *n*. Configuring this will mean a keep-alive packet is sent every *n* seconds, preventing random (and untimely) client disconnects. On Windows, the OpenSSH client may have trouble locating the `config` file. You may need to pass the absolute path to the config file with the `-F` option. The full command now becomes (with `-v` for verbosity):
 
-`ssh -v mg5-ubuntu@<RPI_IP_ADDR> -F C:\Users\user\.ssh\config`
+`ssh -v mg5-ubuntu@<RPI_IP_ADDR> -F C:\Users\user.ssh\config`
 
 You can also use remote desktop applications like VNC or XRDP.
 
@@ -138,7 +138,7 @@ mkdir -p ~/ros2ws/src
 
 ### Fetching the Required Packages
 1. [mg5x](https://github.com/Henchel-Santillan/mg5x) (package with a ROS2 node that subscribes to PX4 VehicleCommands and captures images when requested)  
-2. [px4\_msgs](https://github.com/PX4/px4_msgs) (contains PX4 message definitions for ROS2)
+2. [px4_msgs](https://github.com/PX4/px4_msgs) (contains PX4 message definitions for ROS2)
 
 Add your key to the SSH agent (if not done already) and clone the required packages into `~/ros2ws/src`.
 
@@ -203,32 +203,32 @@ MicroXRCEAgent serial --dev /dev/serial0 -b 921600
 The Raspberry Pi 4B should support AP mode configuration. To double check, run:
 
 ```  
-iw list | grep \-A 10 “Supported interface modes”  
+iw list | grep -A 10 “Supported interface modes”  
 ```
 
 “AP” should appear under the list. Proceed by installing `hostapd` and `dnsmasq`:
 
 ```  
 sudo apt update  
-sudo apt install \-y hostapd dnsmasq  
+sudo apt install -y hostapd dnsmasq  
 ```
 
 You may get an error upon `dnsmasq` being installed:
 
 ```  
-Mar 09 11:05:29 raspberrypi dnsmasq\[1937\]: failed to create listening socket for port 53: Address already in use  
-Mar 09 11:05:29 raspberrypi dnsmasq\[1937\]: FAILED to start up
+Mar 09 11:05:29 raspberrypi dnsmasq[1937]: failed to create listening socket for port 53: Address already in use  
+Mar 09 11:05:29 raspberrypi dnsmasq[1937]: FAILED to start up
 
 …
 
-Mar 09 11:05:29 raspberrypi systemd\[1\]: Failed to start dnsmasq \- A lightweight DHCP and caching DNS server.  
+Mar 09 11:05:29 raspberrypi systemd[1]: Failed to start dnsmasq - A lightweight DHCP and caching DNS server.  
 ```
 
 **You may safely ignore these errors; they will be resolved in a later step**.
 
 ### Configuration File for `hostapd`
 
-Create and edit `/etc/hostapd/hostapd.conf`. This file will set up the access point interface, as well as the network SSID and passphrase, among other settings. 4
+Create and edit `/etc/hostapd/hostapd.conf`. This file will set up the access point interface, as well as the network SSID and passphrase, among other settings.
 
 ```  
 sudo nano /etc/hostapd/hostapd.conf  
@@ -240,18 +240,18 @@ Populate the file with the following:
 interface=wlan0  
 driver=nl80211  
 ssid=mg5x-ap  
-hw\_mode=g  
+hw_mode=g  
 channel=7  
-wmm\_enabled=0  
-macaddr\_acl=0  
-auth\_algs=1  
-ignore\_broadcast\_ssid=0  
+wmm_enabled=0  
+macaddr_acl=0  
+auth_algs=1  
+ignore_broadcast_ssid=0  
 wpa=2  
-wpa\_passphrase=\<PASSPHRASE\>  
-wpa\_key\_mgmt=WPA-PSK  
-wpa\_pairwise=CCMP  
-rsn\_pairwise=CCMP  
-wmm\_enabled=1  
+wpa_passphrase=<PASSPHRASE>  
+wpa_key_mgmt=WPA-PSK  
+wpa_pairwise=CCMP  
+rsn_pairwise=CCMP  
+wmm_enabled=1  
 ```
 
 Some important notes:
@@ -268,7 +268,7 @@ For the `wpa_passphrase`, ask @Henchel-Santillan.
 Once added and saved, edit `/etc/default/hostapd`, uncommenting and modifying the following line
 
 ```  
-DAEMON\_CONF=“\\etc\\hostapd\\hostapd.conf”  
+DAEMON_CONF=“/etc/hostapd/hostapd.conf”  
 ```
 
 This will tell `hostapd` to use this configuration file. Start `hostapd`:
@@ -297,13 +297,7 @@ dhcp-range=192.168.4.2,192.168.4.20,255.255.255.0,24h
 port=5353  
 ```
 
-This assigns addresses between 192.168.4.2 and 192.168.4.20 with a least time of **24 hours**. Note that the `port=5353` will resolve the error from the installation step (it can be uncommented as this line is already present). Alternatively, you may edit `/etc/systemd/resolved.conf` and add:
-
-```  
-DNSStubListener=no  
-```
-
-to switch off binding to port 53\.
+This assigns addresses between 192.168.4.2 and 192.168.4.20 with a least time of **24 hours**. Note that the `port=5353` line will resolve the error from the installation step (this line may already be present in the file and may just have to be uncommented).
 
 On startup, dnsmasq will not wait for wlan0 to initialize. Modify `/lib/systemd/system/dnsmasq.service` to tell `systemd` to only launch the `dnsmasq` service after the network is ready. This can be done by setting the `After=` and `Wants=` fields under the `[Unit]` section of the file.
 
@@ -314,7 +308,7 @@ sudo nano /lib/systemd/system/dnsmasq.service
 and change or add
 
 ```  
-\[Unit\]  
+[Unit]  
 …  
 After=network-online.target  
 Wants=network-online.target  
@@ -343,7 +337,7 @@ sudo cp /etc/netplan/50-cloud-init.yaml /etc/netplan/50-cloud-init.yaml.old
 wlan0:  
   dhcp4: false  
   addresses:  
-    \- 192.168.4.1/24  
+    - 192.168.4.1/24  
 ```
 
 A minimal `50-cloud-init.yaml` file looks like the following:
@@ -374,7 +368,7 @@ You can compare the outputs before and after connecting.
 cat /var/lib/misc/dnsmasq.leases  
 ```
 
-You should see your device as connected, along with the assigned IP address. For example, when I connected, it was `192.168.4.7`.
+You should see your device connected, along with the assigned IP address (e.g. `192.168.4.7`).
 
 ## Setting Up the Live Feed Camera
 The live feed camera is the Arducam 8MP USB Camera Module (see [Arducam 8MP 1080P USB Camera Module](https://www.arducam.com/product/b0196arducam-8mp-1080p-usb-camera-module-1-4-cmos-imx219-mini-uvc-usb2-0-webcam-board-with-1-64ft-0-5m-usb-cable-for-windows-linux-android-and-mac-os/)). It is based on the IMX219 sensor. It is also a UVC-compliant camera, and so it is not (and likely never will be) compatible with `libcamera`.
@@ -388,7 +382,7 @@ Bus 001 Device 004: ID 0c45:6366 Microdia Webcam Vitade AF
 Running `v4l2-ctl --list-devices` should have `Arducam_8mp` in the output:
 
 ```
-Arducam\_8mp: USB Camera (usb-0000:01:00.0-1.3):  
+Arducam_8mp: USB Camera (usb-0000:01:00.0-1.3):  
 	/dev/video0  
 	/dev/video1  
 	/dev/media2
@@ -399,7 +393,7 @@ Then, build the `mg5-stream-app` from `mg5/stream` by following the instructions
 ### QGroundControl Notes
 Note that QGroundControl **does not** support direct MJPG video streams (they must first be converted to H.264). [VLC Media Player](https://www.videolan.org/vlc/download-windows.html) will likely need to be used instead. Presently, MJPG streams have not been tested, and so it is recommended to build with the pipeline that uses YUYV. The `mg5-stream-app` executable will be used when setting up the live feed service in the next section.
 
-In QGroundControl, click on the “Q” icon \> Application Settings. This is what you should configure based on what stream. Captured below are the default settings, which should work right out of the box with the default stream settings (the "YUYV" build).
+In QGroundControl, click on the “Q” icon > Application Settings. This is what you should configure based on what stream. Captured below are the default settings, which should work right out of the box with the default stream settings (the "YUYV" build).
 
 ![Video Settings, QGroundControl](resources/provisioning/video_settings.png)
 
