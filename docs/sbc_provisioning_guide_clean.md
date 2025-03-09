@@ -416,39 +416,18 @@ To start the live camera feed, the ROS2 `image_capture_node` from the `mg5x` pac
 
 Follow the instructions [here](https://github.com/Henchel-Santillan/mg5/blob/main/services/README.md) for provisioning the services. Doing so should complete the provisioning process. The following sections offer additional setup information for different use cases.
 
-
-## Customizing the Default-Provisioned System
-TODO: The following section is incomplete.
-
-### Configuring the SBC as an Access Point (AP)
-TODO: Complete this section
-
-In conditions where a reliable Wi-Fi network that both the PC running the GCS and the SBC connect to may not exist, the SBC can be configured as an **access point**. This enables the PC to directly communicate with the SBC. To configure the drone as an access point:
-
-
-### Returning the SBC to Client Mode
-TODO: Complete this section
-
-For experimentation, putting the SBC in client mode is typically preferable. The SBC is normally in client mode; this section applies if the SBC was previously configured as an AP. To restore client mode:
-
-
 # Extracting Files from the SBC
 
-There are 3 main ways to extract files from the SBC. The first method is the most user-friendly method (for both developers and users alike).
+There are 2 main ways to extract files from the SBC. The first method is the most user-friendly method (for both developers and users alike).
 
-## Method 1: USB Gadget Mode
-TODO: Finish this section
-
-## Method 2: scp over SSH
-You need to be able to ping your Raspberry Pi for this first method. This is the fastest method for file transfer, and only requires a connection to the SBC There may be several reasons why you cannot ping the SBC - nobody knows why! Just wait a bit for some good fortune.
-
-Example (copying a directory):
+## Method 1: scp over SSH
+You need to be able to ping your Raspberry Pi for this first method. This is the fastest method for file transfer, and requires a network connection to the SBC.
 
 ```
 scp -r mg5-ubuntu@<RPI_IP_ADDR>:<path/to/folder> <destination on host>
 ```
 
-## Method 3: Use a Physical USB Drive  
+## Method 2: Use a Physical USB Drive  
 Connect a USB drive to any of the USB ports, USB 3.0 preferred (blue ports).
 
 1. Identify the USB device using `lsblk`.  
@@ -461,4 +440,4 @@ Connect a USB drive to any of the USB ports, USB 3.0 preferred (blue ports).
 5. Unmount the device: `sudo umount /media/usb`.  
 6. Unplug the USB device, plug into your PC, and retrieve the files.
 
-Note that this method works well if you have an external monitor and keyboard. Otherwise, if you are using SSH to run these commands, just use Method 2.
+Note that this method works well if you have an external monitor and keyboard. Otherwise, if you are using SSH to run these commands, just use Method 1.
