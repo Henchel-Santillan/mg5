@@ -196,6 +196,185 @@ On the SBC, this points to either `/dev/ttyS0` or `/dev/ttyAMA0`. The agent is s
 MicroXRCEAgent serial --dev /dev/serial0 -b 921600
 ```
 
+## Setting Up the Raspberry Pi as an Access Point (AP)
+
+### Prerequisites
+
+The Raspberry Pi 4B should support AP mode configuration. To double check, run:
+
+```  
+iw list | grep \-A 10 “Supported interface modes”  
+```
+
+“AP” should appear under the list. Proceed by installing `hostapd` and `dnsmasq`:
+
+```  
+sudo apt update  
+sudo apt install \-y hostapd dnsmasq  
+```
+
+You may get an error upon `dnsmasq` being installed:
+
+```  
+Mar 09 11:05:29 raspberrypi dnsmasq\[1937\]: failed to create listening socket for port 53: Address already in use  
+Mar 09 11:05:29 raspberrypi dnsmasq\[1937\]: FAILED to start up
+
+…
+
+Mar 09 11:05:29 raspberrypi systemd\[1\]: Failed to start dnsmasq \- A lightweight DHCP and caching DNS server.  
+```
+
+**You may safely ignore these errors; they will be resolved in a later step**.
+
+### Configuration File for `hostapd`
+
+Create and edit `/etc/hostapd/hostapd.conf`. This file will set up the access point interface, as well as the network SSID and passphrase, among other settings. 4
+
+```  
+sudo nano /etc/hostapd/hostapd.conf  
+```
+
+Populate the file with the following:
+
+```  
+interface=wlan0  
+driver=nl80211  
+ssid=mg5x-ap  
+hw\_mode=g  
+channel=7  
+wmm\_enabled=0  
+macaddr\_acl=0  
+auth\_algs=1  
+ignore\_broadcast\_ssid=0  
+wpa=2  
+wpa\_passphrase=\<PASSPHRASE\>  
+wpa\_key\_mgmt=WPA-PSK  
+wpa\_pairwise=CCMP  
+rsn\_pairwise=CCMP  
+wmm\_enabled=1  
+```
+
+Some important notes:
+
+* `macraddr_acl` set to 0 means no MAC address-based access control is applied, allowing any device to connect, provided that device provides the correct credentials  
+* `channel` is set to 7 and `hw_mode` is set to `g`, which  
+  * sets the wireless HW mode to IEEE 802.11g (2.4 GHz frequency band)  
+  * specifies the 2.4 GHz channel on which the AP will operate  
+* `ignore_broadcast_ssid=0` means the SSID will be visible to devices scanning for networks  
+* `wmm_enabled=1` is intended to support QoS features for video traffic  
+* WPA2 (`wpa=2`) is the security protocol
+
+For the `wpa_passphrase`, ask @Henchel-Santillan.  
+Once added and saved, edit `/etc/default/hostapd`, uncommenting and modifying the following line
+
+```  
+DAEMON\_CONF=“\\etc\\hostapd\\hostapd.conf”  
+```
+
+This will tell `hostapd` to use this configuration file. Start `hostapd`:
+
+```  
+sudo systemctl unmask hostapd  
+sudo systemctl enable hostapd  
+sudo systemctl start hostapd  
+```
+
+### Setting Up `dnsmasq`
+
+This step enables devices that connect to the Raspberry Pi to be assigned an IP address.
+
+1. Backup the original `/etc/dnsmasq.conf`:
+
+```  
+sudo cp /etc/dnsmasq.conf /etc/dnsmasq.conf.old  
+```
+
+2. Add the following to the original `/etc/dnsmasq.conf` file:
+
+```  
+interface=wlan0  
+dhcp-range=192.168.4.2,192.168.4.20,255.255.255.0,24h  
+port=5353  
+```
+
+This assigns addresses between 192.168.4.2 and 192.168.4.20 with a least time of **24 hours**. Note that the `port=5353` will resolve the error from the installation step (it can be uncommented as this line is already present). Alternatively, you may edit `/etc/systemd/resolved.conf` and add:
+
+```  
+DNSStubListener=no  
+```
+
+to switch off binding to port 53\.
+
+On startup, dnsmasq will not wait for wlan0 to initialize. Modify `/lib/systemd/system/dnsmasq.service` to tell `systemd` to only launch the `dnsmasq` service after the network is ready. This can be done by setting the `After=` and `Wants=` fields under the `[Unit]` section of the file.
+
+```  
+sudo nano /lib/systemd/system/dnsmasq.service  
+``` 
+
+and change or add
+
+```  
+\[Unit\]  
+…  
+After=network-online.target  
+Wants=network-online.target  
+```
+
+Then, reload dnsmasq config:
+
+```  
+sudo systemctl daemon-reload  
+sudo systemctl restart dnsmasq  
+```
+
+### Configuring Static IP
+
+**Writer’s Note: Putting the following configuration under “wifis” results in no IP address being assigned to the connecting device. Running `sudo netplan apply` will fail since no `access-points` are specified. Putting it under “ethernets” is what worked …**
+
+1. Backup the original `netplan` yaml file:
+
+```  
+sudo cp /etc/netplan/50-cloud-init.yaml /etc/netplan/50-cloud-init.yaml.old  
+```
+
+2. Under `network:` and `ethernets:` comment out the wlan information added during the SD card formatting and mounting process and add instead:
+
+```  
+wlan0:  
+  dhcp4: false  
+  addresses:  
+    \- 192.168.4.1/24  
+```
+
+A minimal `50-cloud-init.yaml` file looks like the following:
+
+```  
+network:  
+  version: 2  
+  ethernets:  
+    wlan0:  
+      dhcp4: false  
+      addresses:
+
+- 192.168.4.1/24
+
+```
+
+Reboot the system. Try connecting to the Raspberry Pi via Wi-Fi. On the Windows PC, it should say `No Internet, Secured` under the `mg5x-ap` SSID.
+
+Some ways to check on the Raspberry Pi if your device is connected:
+
+1. `iw dev wlan0 station dump`
+
+You can compare the outputs before and after connecting.
+
+2. Check the `dnsmasq` lease file:
+
+```  
+cat /var/lib/misc/dnsmasq.leases  
+```
+
+You should see your device as connected, along with the assigned IP address. For example, when I connected, it was `192.168.4.7`.
 
 ## Setting Up the Live Feed Camera
 The live feed camera is the Arducam 8MP USB Camera Module (see [Arducam 8MP 1080P USB Camera Module](https://www.arducam.com/product/b0196arducam-8mp-1080p-usb-camera-module-1-4-cmos-imx219-mini-uvc-usb2-0-webcam-board-with-1-64ft-0-5m-usb-cable-for-windows-linux-android-and-mac-os/)). It is based on the IMX219 sensor. It is also a UVC-compliant camera, and so it is not (and likely never will be) compatible with `libcamera`.
